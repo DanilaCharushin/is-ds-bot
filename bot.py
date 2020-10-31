@@ -77,9 +77,12 @@ async def flush(ctx):
     global current
     if working:
         if ctx.message.author.name in admins or ctx.message.author.nick in admins:
-            msg = f'Вы сняли {current.nick} с защиты'
-            current = None
-            await ctx.send(msg)
+            if current:
+                msg = f'Вы сняли {current.nick} с защиты'
+                current = None
+                await ctx.send(msg)
+            else:
+                await ctx.send("На защите ещё никого нет")
         else:
             await ctx.send(f'Не имеешь права :(')
 
@@ -87,7 +90,10 @@ async def flush(ctx):
 @bot.command()
 async def get(ctx):
     if working:
-        await ctx.send("Сейчас на защите: {}".format(current.nick) if current else "Никто не защищается")
+        if current:
+            await ctx.send("Сейчас на защите: {}".format(current.nick))
+        else:
+            await ctx.send("Никто не защищается")
 
 
 @bot.command()
